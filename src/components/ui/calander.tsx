@@ -1,99 +1,100 @@
-import { cn, vclsx } from "@/lib/utils";
-import { getDay, getDaysInMonth, isToday } from "date-fns";
-import React, { Children, ReactElement, ReactNode, useState } from "react";
+// import { getDay, getDaysInMonth } from "date-fns";
+// import React, { ReactNode, useState } from "react";
 
-type SlicedDate = {
-  day: number;
-  month: number;
-  year: number;
-};
+import { ReactNode } from "react";
 
-const structureDate = (date: Date): SlicedDate => {
-  const day = date.getDate();
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  return { year, month, day };
-};
+// type SlicedDate = {
+//   day: number;
+//   month: number;
+//   year: number;
+// };
 
-const getDate = (params: SlicedDate): Date => {
-  const dateParams = Object.values(params) as [number, number, number];
-  return new Date(...dateParams);
-};
+// const structureDate = (date: Date): SlicedDate => {
+//   const day = date.getDate();
+//   const month = date.getMonth();
+//   const year = date.getFullYear();
+//   return { year, month, day };
+// };
 
-const CalanderContext = React.createContext({});
+// const getDate = (params: SlicedDate): Date => {
+//   const dateParams = Object.values(params) as [number, number, number];
+//   return new Date(...dateParams);
+// };
 
-const CalanderProvider = ({ children }: any) => {
-  const [currentDate, setCurrentDate] = useState(structureDate(new Date()));
+// const CalanderContext = React.createContext({});
 
-  const numberDaysInMonth = getDaysInMonth(getDate(currentDate));
-  const firstDayInMonth = getDay(getDate({ ...currentDate, day: 1 }));
+// const CalanderProvider = ({ children }: any) => {
+//   const [currentDate, setCurrentDate] = useState(structureDate(new Date()));
 
-  const moveNextMonth = () => {
-    setCurrentDate((prev) => {
-      return { ...prev, month: prev.month + 1 };
-    });
-  };
+//   const numberDaysInMonth = getDaysInMonth(getDate(currentDate));
+//   const firstDayInMonth = getDay(getDate({ ...currentDate, day: 1 }));
 
-  const movePrevMonth = () => {
-    setCurrentDate((prev) => {
-      return { ...prev, month: prev.month - 1 };
-    });
-  };
+//   const moveNextMonth = () => {
+//     setCurrentDate((prev) => {
+//       return { ...prev, month: prev.month + 1 };
+//     });
+//   };
 
-  const moveToDay = (day: number) => {
-    setCurrentDate((prev) => {
-      return { ...prev, day: day };
-    });
-  };
-  return (
-    <CalanderContext.Provider
-      value={{
-        currentDate,
-        numberDaysInMonth,
-        firstDayInMonth,
-        moveNextMonth,
-        movePrevMonth,
-        moveToDay,
-      }}
-    >
-      {children}
-    </CalanderContext.Provider>
-  );
-};
+//   const movePrevMonth = () => {
+//     setCurrentDate((prev) => {
+//       return { ...prev, month: prev.month - 1 };
+//     });
+//   };
 
-export const useCalander = () => {
-  const [currentDate, setCurrentDate] = useState(structureDate(new Date()));
+//   const moveToDay = (day: number) => {
+//     setCurrentDate((prev) => {
+//       return { ...prev, day: day };
+//     });
+//   };
+//   return (
+//     <CalanderContext.Provider
+//       value={{
+//         currentDate,
+//         numberDaysInMonth,
+//         firstDayInMonth,
+//         moveNextMonth,
+//         movePrevMonth,
+//         moveToDay,
+//       }}
+//     >
+//       {children}
+//     </CalanderContext.Provider>
+//   );
+// };
 
-  const daysInMonth = getDaysInMonth(getDate(currentDate));
-  const firstDay = getDay(getDate({ ...currentDate, day: 1 }));
+// export const useCalander = () => {
+//   const [currentDate, setCurrentDate] = useState(structureDate(new Date()));
 
-  const moveNextMonth = () => {
-    setCurrentDate((prev) => {
-      return { ...prev, month: prev.month + 1 };
-    });
-  };
+//   const daysInMonth = getDaysInMonth(getDate(currentDate));
+//   const firstDay = getDay(getDate({ ...currentDate, day: 1 }));
 
-  const movePrevMonth = () => {
-    setCurrentDate((prev) => {
-      return { ...prev, month: prev.month - 1 };
-    });
-  };
+//   const moveNextMonth = () => {
+//     setCurrentDate((prev) => {
+//       return { ...prev, month: prev.month + 1 };
+//     });
+//   };
 
-  const moveToDay = (day: number) => {
-    setCurrentDate((prev) => {
-      return { ...prev, day: day };
-    });
-  };
+//   const movePrevMonth = () => {
+//     setCurrentDate((prev) => {
+//       return { ...prev, month: prev.month - 1 };
+//     });
+//   };
 
-  return {
-    currentDate,
-    daysInMonth,
-    firstDay,
-    moveNextMonth,
-    movePrevMonth,
-    moveToDay,
-  };
-};
+//   const moveToDay = (day: number) => {
+//     setCurrentDate((prev) => {
+//       return { ...prev, day: day };
+//     });
+//   };
+
+//   return {
+//     currentDate,
+//     daysInMonth,
+//     firstDay,
+//     moveNextMonth,
+//     movePrevMonth,
+//     moveToDay,
+//   };
+// };
 
 // export const Calander = () => {
 //   const { currentDate, firstDay, daysInMonth, moveNextMonth, movePrevMonth } =
@@ -156,15 +157,31 @@ export const useCalander = () => {
 //   );
 // };
 
-type TTestComponentProps = React.HTMLProps<HTMLTableRowElement> & {
-  children: ({ isSelected }: { isSelected: string }) => ReactNode;
+type TNonRangeChildren = ({ isSelected }: { isSelected: true }) => ReactNode;
+type TRangeChildren = ({
+  isSelected,
+  isRange,
+}: {
+  isSelected: boolean;
+  isRange: boolean;
+}) => ReactNode;
+
+type TTestComponentProps<T extends boolean> = {
+  isRange: T;
+  children: T extends true ? TRangeChildren : TNonRangeChildren;
 };
 
-export const TestComponent = ({ children, ...rest }: TTestComponentProps) => {
-  const isSelected = "isSelected";
+export const TestComponent = <T extends boolean>({
+  isRange,
+  children,
+  ...rest
+}: TTestComponentProps<T>) => {
+  const isSelected = true;
   return (
-    <div id="test" {...rest}>
-      {children({ isSelected })}
+    <div {...rest}>
+      {isRange
+        ? (children as TRangeChildren)({ isSelected, isRange })
+        : (children as TNonRangeChildren)({ isSelected })}
     </div>
   );
 };

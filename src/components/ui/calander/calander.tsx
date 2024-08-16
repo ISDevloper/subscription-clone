@@ -1,17 +1,26 @@
-import { Children } from "react";
+import { ReactNode } from "react";
+import { Action } from "./actions";
 import { CalanderProvider } from "./context";
+import { Item } from "./item";
+import { Items } from "./items";
+import { Picker } from "./picker";
 
-export const Calander = ({ children, ...rest }: any) => {
-  const subComponentList = Object.keys(Calander);
-  const subComponents = subComponentList.map((key) => {
-    return Children.map(children, (child: JSX.Element) =>
-      child?.type?.name === key ? child : null
-    );
-  });
-
+export const Calander = ({
+  children,
+  defaultValue,
+  ...rest
+}: {
+  children: ReactNode;
+  defaultValue: null | Date;
+}) => {
   return (
-    <CalanderProvider>
-      <div {...rest}>{subComponents.map((component) => component)}</div>
+    <CalanderProvider defaultvalue={defaultValue}>
+      <div {...rest}>{children}</div>
     </CalanderProvider>
   );
 };
+
+Calander.Picker = Picker;
+Calander.Action = Action;
+Calander.Items = Items;
+Calander.Item = Item;

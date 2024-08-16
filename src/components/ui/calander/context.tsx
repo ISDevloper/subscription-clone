@@ -1,50 +1,52 @@
-import { getDay, getDaysInMonth } from "date-fns";
-import { createContext, useState } from "react";
-import { getDate, structureDate } from "./utlis";
-import { SlicedDate } from "./types";
+import { ReactNode, createContext, useState } from "react";
+import { addMonths, setDate, subMonths } from "date-fns";
+interface DateContextType {
+  currentDate: Date;
+  selectedDate: null | Date;
+  moveNextMonth: () => void;
+  movePrevMonth: () => void;
+  moveToDay: (day: number) => void;
+}
 
-const currentDate = structureDate(new Date());
-const numberDaysInMonth = getDaysInMonth(getDate(currentDate));
-const firstDayInMonth = getDay(getDate({ ...currentDate, day: 1 }));
+type TProvider = {
+  children: ReactNode;
+  defaultvalue: null | Date;
+};
 
-export const CalanderContext = createContext({
-  currentDate,
-  numberDaysInMonth,
-  firstDayInMonth,
+const defaultDateContext: DateContextType = {
+  currentDate: new Date(),
+  selectedDate: null,
   moveNextMonth: () => {},
   movePrevMonth: () => {},
   moveToDay: () => {},
-});
+};
 
-export const CalanderProvider = ({ children }: any) => {
-  const [currentDate, setCurrentDate] = useState(structureDate(new Date()));
+export const CalanderContext =
+  createContext<DateContextType>(defaultDateContext);
 
-  const numberDaysInMonth = getDaysInMonth(getDate(currentDate));
-  const firstDayInMonth = getDay(getDate({ ...currentDate, day: 1 }));
+export const CalanderProvider = ({
+  children,
+  defaultvalue = null,
+}: TProvider) => {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(defaultvalue);
 
   const moveNextMonth = () => {
-    setCurrentDate((prev: SlicedDate) => {
-      return { ...prev, month: prev.month + 1 };
-    });
+    setCurrentDate(addMonths(currentDate, 1));
   };
 
   const movePrevMonth = () => {
-    setCurrentDate((prev: SlicedDate) => {
-      return { ...prev, month: prev.month - 1 };
-    });
+    setCurrentDate(subMonths(currentDate, 1));
   };
 
   const moveToDay = (day: number) => {
-    setCurrentDate((prev: SlicedDate) => {
-      return { ...prev, day: day };
-    });
+    setSelectedDate(setDate(currentDate, day));
   };
   return (
     <CalanderContext.Provider
       value={{
         currentDate,
-        numberDaysInMonth,
-        firstDayInMonth,
+        selectedDate,
         moveNextMonth,
         movePrevMonth,
         moveToDay,

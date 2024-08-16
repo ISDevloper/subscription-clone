@@ -9,8 +9,11 @@ import { ReactNode, useEffect, useState } from "react";
 import { Stepper, TStepperApi } from "./components/ui/stepper";
 import { vclsx } from "./lib/utils";
 import { EventTypeEnum } from "./components/ui/stepper/constants";
-import { useGetWidth } from "./utils/getWith";
-import { Calander, TestComponent } from "./components/ui/calander";
+import { Card } from "./components/ui/test";
+import { SlicedDate } from "./components/ui/calander/types";
+import { getDay, getDaysInMonth, startOfMonth, subMonths } from "date-fns";
+import { Calander } from "./components/ui/calander/calander";
+import clsx from "clsx";
 
 const selectOptions: Array<TSelectField> = [
   { label: "label", value: "value1" },
@@ -62,6 +65,7 @@ type TStep = {
   validation?: Array<string>;
   component: ReactNode;
 };
+
 type TSteps = {
   [k in string]: TStep;
 };
@@ -133,8 +137,6 @@ function App() {
     formState: { errors },
   } = methods;
 
-  console.log(errors);
-
   const onSubmit = (data: TFormData) => {
     console.log(data);
   };
@@ -169,16 +171,48 @@ function App() {
       });
     }
   }, [api]);
+
   return (
     <div className="w-1/3 py-12 mx-auto">
-      <TestComponent className="text-red-500">
-        {({ isSelected }) => (
-          <div>
-            <p>{isSelected}</p>
-          </div>
-        )}
-      </TestComponent>
-      {/* <Calander /> */}
+      <Calander defaultValue={null}>
+        <Calander.Picker>
+          {({ day, month, year }) => {
+            return (
+              <>
+                <div>{`${day} ${month} ${year}`}</div>
+                <Calander.Items className="grid grid-cols-7 gap-4 p-4">
+                  {({ items }) => {
+                    return items.map((item) => {
+                      return (
+                        <Calander.Item item={item}>
+                          {({ isToday, isCurrentMonth, isCurrent }) => {
+                            return (
+                              <div
+                                className={vclsx(
+                                  "text-gray-100",
+                                  isCurrentMonth && "text-black",
+                                  isToday && "text-red-500",
+                                  isCurrent && "bg-black text-gray-100"
+                                )}
+                              >
+                                {item.text}
+                              </div>
+                            );
+                          }}
+                        </Calander.Item>
+                      );
+                    });
+                  }}
+                </Calander.Items>
+                <div className="flex gap-4">
+                  <Calander.Action action="prev">{"<"}</Calander.Action>
+                  <Calander.Action action="next">{">"}</Calander.Action>
+                </div>
+              </>
+            );
+          }}
+        </Calander.Picker>
+      </Calander>
       <Form onSubmit={onSubmit} {...methods}>
         <Stepper setApi={setApi} currentStep={0}>
           <Stepper.Indicators className="flex">

@@ -173,97 +173,99 @@ function App() {
   }, [api]);
 
   return (
-    <div className="w-1/3 py-12 mx-auto">
-      <Calander defaultValue={null}>
-        <Calander.Picker>
-          {({ day, month, year }) => {
-            return (
-              <>
-                <div>{`${day} ${month} ${year}`}</div>
-                <Calander.Items className="grid grid-cols-7 gap-4 p-4">
-                  {({ items }) => {
-                    return items.map((item) => {
-                      return (
-                        <Calander.Item item={item}>
-                          {({ isToday, isCurrentMonth, isCurrent }) => {
-                            return (
-                              <div
-                                className={vclsx(
-                                  "text-gray-100",
-                                  isCurrentMonth && "text-black",
-                                  isToday && "text-red-500",
-                                  isCurrent && "bg-black text-gray-100"
-                                )}
-                              >
-                                {item.text}
-                              </div>
-                            );
-                          }}
-                        </Calander.Item>
-                      );
-                    });
-                  }}
-                </Calander.Items>
-                <div className="flex gap-4">
-                  <Calander.Action action="prev">{"<"}</Calander.Action>
-                  <Calander.Action action="next">{">"}</Calander.Action>
-                </div>
-              </>
-            );
-          }}
-        </Calander.Picker>
-      </Calander>
-      <Form onSubmit={onSubmit} {...methods}>
-        <Stepper setApi={setApi} currentStep={0}>
-          <Stepper.Indicators className="flex">
-            {Object.keys(steps).map((key, index) => {
+    <>
+      <div className="w-1/3 py-12 mx-auto">
+        <Calander isRange={true} defaultValue={null}>
+          <Calander.Picker>
+            {({ day, month, year }) => {
               return (
-                <Stepper.Indicator
-                  key={index}
-                  onClick={() => {
-                    handleMoveTo(index);
-                  }}
-                >
-                  {({ activeStep, handleClick }) => {
-                    return (
-                      <div
-                        onClick={handleClick}
-                        className={vclsx(
-                          "px-6 py-3 flex-1 flex items-center justify-center border",
-                          activeStep === index
-                            ? "border-red-500"
-                            : "border-gray-100"
-                        )}
-                      >
-                        <span>{steps[key].stepName}</span>
-                      </div>
-                    );
-                  }}
-                </Stepper.Indicator>
+                <>
+                  <div>{`${day} ${month} ${year}`}</div>
+                  <Calander.Items className="grid grid-cols-7 gap-4 p-4">
+                    {({ items }) => {
+                      return items.map((item) => {
+                        return (
+                          <Calander.Item item={item}>
+                            {({ isToday, isCurrentMonth, isSelected }) => {
+                              return (
+                                <div
+                                  className={vclsx(
+                                    "text-gray-100",
+                                    isCurrentMonth && "text-black",
+                                    isToday && "text-red-500",
+                                    isSelected && "bg-black text-gray-100"
+                                  )}
+                                >
+                                  {item.text}
+                                </div>
+                              );
+                            }}
+                          </Calander.Item>
+                        );
+                      });
+                    }}
+                  </Calander.Items>
+                  <div className="flex gap-4">
+                    <Calander.Action action="prev">{"<"}</Calander.Action>
+                    <Calander.Action action="next">{">"}</Calander.Action>
+                  </div>
+                </>
               );
-            })}
-          </Stepper.Indicators>
-          <Stepper.StepList className="py-6">
-            {Object.keys(steps).map((key) => (
-              <Stepper.Step key={key}>
-                <Step step={steps[key]} />
-              </Stepper.Step>
-            ))}
-          </Stepper.StepList>
-          <Stepper.Actions className="flex justify-between">
-            <Stepper.Previous type="button">
-              <Button>Previous</Button>
-            </Stepper.Previous>
-            <Stepper.Next type="button" onClick={handleNext}>
-              <Button>Next</Button>
-            </Stepper.Next>
-            <Stepper.Last type="submit">
-              <Button>Submit</Button>
-            </Stepper.Last>
-          </Stepper.Actions>
-        </Stepper>
-      </Form>
-    </div>
+            }}
+          </Calander.Picker>
+        </Calander>
+        <Form onSubmit={onSubmit} {...methods}>
+          <Stepper setApi={setApi} currentStep={0}>
+            <Stepper.Indicators className="flex">
+              {Object.keys(steps).map((key, index) => {
+                return (
+                  <Stepper.Indicator
+                    key={index}
+                    onClick={() => {
+                      handleMoveTo(index);
+                    }}
+                  >
+                    {({ activeStep, handleClick }) => {
+                      return (
+                        <div
+                          onClick={handleClick}
+                          className={vclsx(
+                            "px-6 py-3 flex-1 flex items-center justify-center border",
+                            activeStep === index
+                              ? "border-red-500"
+                              : "border-gray-100"
+                          )}
+                        >
+                          <span>{steps[key].stepName}</span>
+                        </div>
+                      );
+                    }}
+                  </Stepper.Indicator>
+                );
+              })}
+            </Stepper.Indicators>
+            <Stepper.StepList className="py-6">
+              {Object.keys(steps).map((key) => (
+                <Stepper.Step key={key}>
+                  <Step step={steps[key]} />
+                </Stepper.Step>
+              ))}
+            </Stepper.StepList>
+            <Stepper.Actions className="flex justify-between">
+              <Stepper.Previous type="button">
+                <Button>Previous</Button>
+              </Stepper.Previous>
+              <Stepper.Next type="button" onClick={handleNext}>
+                <Button>Next</Button>
+              </Stepper.Next>
+              <Stepper.Last type="submit">
+                <Button>Submit</Button>
+              </Stepper.Last>
+            </Stepper.Actions>
+          </Stepper>
+        </Form>
+      </div>
+    </>
   );
 }
 

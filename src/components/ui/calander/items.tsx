@@ -18,9 +18,13 @@ type TItemsChildrenProps = {
 };
 type TItems = {
   children: ({ items }: TItemsChildrenProps) => Array<ReactNode>;
+  isRange: boolean;
+  a: string;
 };
-export const Items = ({ children, ...rest }: TItems) => {
+export const Items = ({ children, isRange, a, ...rest }: TItems) => {
   const { currentDate } = useContext(CalanderContext);
+
+  console.log(a);
 
   const daysInMonth = getDaysInMonth(currentDate);
   const firstDayInMonth = startOfMonth(currentDate);

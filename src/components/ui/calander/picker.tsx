@@ -10,9 +10,11 @@ type TPickerChildrenProps = {
 
 type TPicker = {
   children: ({ day, month, year }: TPickerChildrenProps) => ReactNode;
+  a: string;
 };
 
-export const Picker = ({ children }: TPicker) => {
+export const Picker = ({ children, a }: TPicker) => {
+  console.log(a);
   const { currentDate } = useContext(CalanderContext);
   const year = getYear(currentDate);
   const month = format(getMonth(currentDate), "MM");

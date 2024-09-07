@@ -1,21 +1,29 @@
-import { ReactNode } from "react";
+import { Children, ReactNode, cloneElement } from "react";
 import { Action } from "./actions";
 import { CalanderProvider } from "./context";
 import { Item } from "./item";
 import { Items } from "./items";
 import { Picker } from "./picker";
 
+type TCalander = {
+  children: ReactNode;
+  defaultValue: null | Date;
+  isRange: boolean;
+};
+
 export const Calander = ({
   children,
   defaultValue,
+  isRange,
   ...rest
-}: {
-  children: ReactNode;
-  defaultValue: null | Date;
-}) => {
+}: TCalander) => {
+  const clonedChild = Children.map(children, (child) =>
+    cloneElement(child, { a: "lklk" })
+  );
+
   return (
-    <CalanderProvider defaultvalue={defaultValue}>
-      <div {...rest}>{children}</div>
+    <CalanderProvider defaultvalue={defaultValue} isRange={isRange}>
+      <div {...rest}>{clonedChild}</div>
     </CalanderProvider>
   );
 };

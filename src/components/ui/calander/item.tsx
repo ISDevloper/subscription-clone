@@ -5,11 +5,15 @@ import { getDate, getMonth } from "date-fns";
 type TItemChildren = {
   isToday: boolean;
   isCurrentMonth: boolean;
-  isCurrent: boolean;
+  isSelected: boolean;
 };
 
 type TItem = {
-  children: ({ isToday, isCurrentMonth }: TItemChildren) => ReactNode;
+  children: ({
+    isToday,
+    isCurrentMonth,
+    isSelected,
+  }: TItemChildren) => ReactNode;
   item: {
     text: number;
     value: Date;
@@ -25,10 +29,9 @@ export const Item = ({ children, item }: TItem) => {
   const todayDay = getDate(todayDate);
 
   const currentMonth = getMonth(currentDate) + 1;
-  const currenDay = getDate(currentDate);
 
-  const selectedMonth = getMonth(selectedDate) + 1;
-  const selectedDay = getDate(selectedDate);
+  const selectedMonth = selectedDate && getMonth(selectedDate) + 1;
+  const selectedDay = selectedDate && getDate(selectedDate);
 
   const itemMonth = getMonth(item.value) + 1;
   const itemDay = getDate(item.value);
@@ -39,10 +42,10 @@ export const Item = ({ children, item }: TItem) => {
 
   const isToday = todayDay === itemDay && todayMonth === itemMonth;
   const isCurrentMonth = currentMonth === itemMonth;
-  const isCurrent = selectedDay === itemDay && selectedMonth === itemMonth;
+  const isSelected = selectedDay === itemDay && selectedMonth === itemMonth;
   return (
     <button onClick={handleClick}>
-      {children({ isToday, isCurrentMonth, isCurrent })}
+      {children({ isToday, isCurrentMonth, isSelected })}
     </button>
   );
 };

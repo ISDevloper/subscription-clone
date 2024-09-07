@@ -3,6 +3,7 @@ import { addMonths, setDate, subMonths } from "date-fns";
 interface DateContextType {
   currentDate: Date;
   selectedDate: null | Date;
+  isRange: boolean;
   moveNextMonth: () => void;
   movePrevMonth: () => void;
   moveToDay: (day: number) => void;
@@ -11,11 +12,13 @@ interface DateContextType {
 type TProvider = {
   children: ReactNode;
   defaultvalue: null | Date;
+  isRange: boolean;
 };
 
 const defaultDateContext: DateContextType = {
   currentDate: new Date(),
   selectedDate: null,
+  isRange: false,
   moveNextMonth: () => {},
   movePrevMonth: () => {},
   moveToDay: () => {},
@@ -25,6 +28,7 @@ export const CalanderContext =
   createContext<DateContextType>(defaultDateContext);
 
 export const CalanderProvider = ({
+  isRange,
   children,
   defaultvalue = null,
 }: TProvider) => {
@@ -45,6 +49,7 @@ export const CalanderProvider = ({
   return (
     <CalanderContext.Provider
       value={{
+        isRange,
         currentDate,
         selectedDate,
         moveNextMonth,
